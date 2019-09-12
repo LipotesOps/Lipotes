@@ -1,9 +1,28 @@
-master:
-  build: .
-  environment:
-    JAVA_OPTS: "-Djava.awt.headless=true"
-  ports:
-    - "50000:50000"
-    - "8080:8080"
-  volumes:
-    - /var/jenkins_home
+version: "2"
+services:
+  jenkins:
+    #dns: 
+    build: .
+    environment:
+      JAVA_OPTS: "-Djava.awt.headless=true"
+    container_name: jenkins
+    #image: jenkins-rs:2.176.3
+    restart: always
+    hostname: 'jenkins-docker'
+    privileged: true
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+    network_mode: host
+    volumes:
+      - ${BASE_DIR}/jenkins/config/hosts:/etc/ansible/hosts
+      - ${BASE_DIR}/jenkins/config/minion:/etc/salt/minion
+      - ${BASE_DIR}/jenkins/config/master:/etc/salt/master
+      - ${BASE_DIR}/jenkins/jenkins_home:/var/jenkins_home
+      #- ~/.ssh:/root/.ssh
+      - ${BASE_DIR}/srv/:/srv/
+      #- /etc/resolv.conf:/etc/resolv.conf
+      - ${BASE_DIR}/jdk1.8.0_91:/data/apps/jdk1.8.0_91
+      - ${BASE_DIR}/gradle-2.2.1:/data/apps/gradle-2.2.1
+      - ${BASE_DIR}/apache-maven-3.3.9:/data/apps/apache-maven-3.3.9
+      
