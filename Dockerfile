@@ -1,5 +1,6 @@
 FROM centos
 
+RUN command rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN yum update -y && yum install -y epel-release && yum install -y git ansible salt-master salt-minion vim net-tools curl dpkg java java-devel unzip which && yum clean all
 ENV JAVA_HOME /etc/alternatives/jre_openjdk
 
