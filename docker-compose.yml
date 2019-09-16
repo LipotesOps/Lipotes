@@ -19,9 +19,8 @@ services:
       - ${BASE_DIR}/jenkins/config/minion:/etc/salt/minion
       - ${BASE_DIR}/jenkins/config/master:/etc/salt/master
       - ${BASE_DIR}/jenkins/jenkins_home:/var/jenkins_home
-      #- ~/.ssh:/root/.ssh
+      - ${BASE_DIR}/jenkins/root:/root
       - ${BASE_DIR}/srv/:/srv/
-      #- /etc/resolv.conf:/etc/resolv.conf
       - ${BASE_DIR}/jdk1.8.0_91:/data/apps/jdk1.8.0_91
       - ${BASE_DIR}/gradle-2.2.1:/data/apps/gradle-2.2.1
       - ${BASE_DIR}/apache-maven-3.3.9:/data/apps/apache-maven-3.3.9
