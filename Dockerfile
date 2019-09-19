@@ -1,7 +1,7 @@
 FROM centos:6.8
 
 RUN command rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
-RUN yum update -y && yum install -y epel-release && yum install -y git ansible salt-master salt-minion vim net-tools curl dpkg java java-devel unzip which && yum clean all && service iptables stop && chkconfig iptables off
+RUN yum update -y && yum install -y epel-release && yum install -y git ansible salt-master salt-minion vim net-tools curl dpkg java java-devel unzip zip which && yum clean all && service iptables stop && chkconfig iptables off
 ENV JAVA_HOME /etc/alternatives/jre_openjdk
 
 ARG user=root
