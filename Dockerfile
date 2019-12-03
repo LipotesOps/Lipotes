@@ -1,7 +1,7 @@
 FROM centos:6.8
 
 RUN command rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
-RUN yum update -y && yum install -y epel-release && yum install -y git ansible salt-master salt-minion vim net-tools curl dpkg java java-devel unzip zip which && yum clean all && service iptables stop && chkconfig iptables off
+RUN yum update -y && yum install -y epel-release && yum install -y git wget ansible salt-master salt-minion vim net-tools curl dpkg java java-devel unzip zip which && yum clean all # && service iptables stop && chkconfig iptables off
 ENV JAVA_HOME /etc/alternatives/jre_openjdk
 
 ARG user=root
@@ -22,7 +22,13 @@ ENV REF $REF
 # ensure you use the same uid
 RUN mkdir -p $JENKINS_HOME \
   && mkdir -p /data/apps/ \
-  && chown ${uid}:${gid} $JENKINS_HOME
+  && chown ${uid}:${gid} $JENKINS_HOME \
+  && git clone https://github.com/creationix/nvm.git /data/apps/nvm \
+  && echo export NVM_NODEJS_ORG_MIRROR='https://npm.taobao.org/mirrors/node' >> ~/.bash_profile \
+  && echo source /data/apps/nvm/nvm.sh >> ~/.bash_profile \
+  && source ~/.bash_profile \
+  && wget https://dl.yarnpkg.com/rpm/yarn.repo -O /etc/yum.repos.d/yarn.repo \
+  && yum install yarn -y
   # && groupadd -g ${gid} ${group} \
   # && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
 
@@ -38,8 +44,8 @@ RUN mkdir -p ${REF}/init.groovy.d
 # Use tini as subreaper in Docker container to adopt zombie processes
 ARG TINI_VERSION=v0.16.1
 COPY tini_pub.gpg ${JENKINS_HOME}/tini_pub.gpg
-RUN curl -fsSL https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-$(dpkg --print-architecture) -o /sbin/tini \
-  && curl -fsSL https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-$(dpkg --print-architecture).asc -o /sbin/tini.asc \
+RUN wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-$(dpkg --print-architecture) -O /sbin/tini \
+  && wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static-$(dpkg --print-architecture).asc -O /sbin/tini.asc \
   && gpg --no-tty --import ${JENKINS_HOME}/tini_pub.gpg \
   && gpg --verify /sbin/tini.asc \
   && rm -rf /sbin/tini.asc /root/.gnupg \
